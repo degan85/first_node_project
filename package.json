@@ -1,0 +1,16 @@
+{
+  "name": "first_node_project",
+  "version": "1.0.0",
+  "description": "first web application",
+  "main": "firstTest.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "underscore": "^1.8.3"
+  }
+}
