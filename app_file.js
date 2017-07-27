@@ -3,38 +3,46 @@ var app = express();
 var bodyParser = require('body-parser')
 var fs = require('fs');
 
+app.listen(3000, function() {
+    console.log('connected 3000 port!');
+});
+
 app.set('views','./views_file');
 app.set('view engine', 'jade');
 app.locals.pretty = true;
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/topic/:id', function(req, res) {
-    var id = req.params.id;
+app.get('/topic/new', function(req, res){
     fs.readdir('data', function(err, files) {
         if (err) {
             console.log(err);
             res.status(500).send('Internal Server Error');
         }
-        fs.readFile('data/' + id, 'utf8', function (err, data) {
-            if (err) {
-                console.log(err);
-                res.status(500).send('Internal Server Error');
-            }
-            res.render('view', {topics: files, title: id, data: data});
-        });
+        res.render('new', {topics: files});
     });
 });
 
-app.get('/topic', function(req, res) {
+
+app.get(['/topic','/topic/:id'], function(req, res) {
+    var id = req.params.id;
     fs.readdir('data', function(err, files) {
         if(err) {
             console.log(err);
             res.status(500).send('Internal Server Error');
         }
-        res.render('view', {topics : files });
+        if(id) {
+            fs.readFile('data/' + id, 'utf8', function (err, data) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send('Internal Server Error');
+                }
+                res.render('view', {topics: files, title: id, data: data});
+            });
+        }else {
+            res.render('view', {topics : files, title: 'welcome', data: 'please click topic' });
+        }
     });
-
 });
 
 app.post('/topic', function(req, res) {
@@ -46,17 +54,7 @@ app.post('/topic', function(req, res) {
             console.log(err);
             res.status(500).send('Internal Server Error');
         }
-        res.send('sucess');
+        res.redirect('/topic/'+title);
     });
-
-
 });
 
-app.listen(3000, function() {
-    console.log('connected 3000 port!');
-});
-
-app.get('/topic/new', function(req,res){
-    res.render('new');
-    // res.send('Hi');
-});

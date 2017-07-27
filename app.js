@@ -1,12 +1,34 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var multer = require('multer');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+var upload = multer({ storage: storage });
 
 app.set('view engine', 'jade');
 app.use(express.static('public'));
+app.use('/user', express.static('uploads'));
 app.set('views', './views');
 app.locals.pretty = true;
+
 app.use(bodyParser.urlencoded({ extended: false }));
+app.get('/upload', function(req, res) {
+    res.render('upload');
+});
+
+app.post('/upload', upload.single('userfile'), function(req, res) {
+    console.log(req.file);
+    res.send('upload : '+req.file.originalname);
+});
 
 app.post('/form_reciver',function(req, res) {
    var title = req.body.title;
