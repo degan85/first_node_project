@@ -10,9 +10,9 @@ var server = Oriento({
 var db = server.use('test');
 console.log('Using database: ' + db.name);
 
-db.record.get('#22:0').then(function (record) {
-    console.log('Loaded record:', record);
-});
+// db.record.get('#22:0').then(function (record) {
+//     console.log('Loaded record:', record);
+// });
 
 
 // CREATE
@@ -33,12 +33,31 @@ db.record.get('#22:0').then(function (record) {
 //     console.log(result);
 // });
 
-var sql = 'INSERT INTO topic (title, description) VALUES(:title, :desc)';
-db.query(sql, {
-    params: {
-        title: 'Express',
-        desc: 'Express is framework for web'
-    }
-}).then(function(result) {
+// var sql = 'INSERT INTO topic (title, description) VALUES(:title, :desc)';
+// db.query(sql, {
+//     params: {
+//         title: 'Express',
+//         desc: 'Express is framework for web'
+//     }
+// }).then(function(result) {
+//     console.log(result);
+// });
+
+// server.list()
+//     .then(function (dbs) {
+//         console.log('There are ' + dbs + ' databases on the server.');
+//     });
+
+// var sql = "UPDATE topic SET title=:title where @rid=:rid";
+// db.query(sql, {params:{title : 'Expressjs', rid : '#23:0'}}).then(function (result) {
+//     console.log(result);
+// });
+
+var sql = "DELETE FROM topic WHERE @rid=:rid";
+db.query(sql, {params:{rid : '#23:0'}}).then(function (result) {
     console.log(result);
 });
+
+
+
+db.close();
