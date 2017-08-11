@@ -1,0 +1,33 @@
+doctype html
+head
+    meta(charset='utf-8')
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    block script
+        <!-- Latest compiled JavaScript -->
+        script(src="https://code.jquery.com/jquery-1.12.4.js")
+        script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js")
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+        script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js")
+
+        script(src="blockly/blockly_compressed.js")
+        script(src="blockly/blocks_compressed.js")
+        script(src="blockly/javascript_compressed.js")
+
+    title Animate
+    link(rel="stylesheet", type="text/css", href="css/animate.css")
+html
+    body
+        div.col-sm-7
+            include animate_pic
+        div.col-sm-5
+            include animate_block.html
+        div.col-sm-12
+            button(type="button" id='run_button' class="btn btn-success btn-lg") Run
+            button(type="button" id='see_code' class="btn btn-warning btn-lg" onclick="showCode()") see code
+            button(type="button" id='refresh_button' class="btn btn-info btn-lg" style="float: right;") Refresh
+
+        script(type="text/javascript" src="blockly/testAnimateJs3.js")
+        script(type="text/javascript" src="blockly/blockly_js.js")
