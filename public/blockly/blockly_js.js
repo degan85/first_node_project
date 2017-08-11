@@ -205,14 +205,15 @@ Blockly.Blocks['angle_move'] = {
         this.appendDummyInput()
             .appendField(new Blockly.FieldAngle(90), "move_angle")
             .appendField("방향으로")
-            .appendField(new Blockly.FieldNumber(0, 0, 20), "move_angle_distance");
+            .appendField(new Blockly.FieldNumber(0, 0, 20), "move_angle_distance")
+            .appendField("이동");
         this.appendValueInput("easing_function")
             .setCheck("effect")
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("효과");
         this.setInputsInline(false);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(true, null);
+        this.setPreviousStatement(true, ["direction_block_left", "direction_block_top"]);
+        this.setNextStatement(true, ["direction_block_left", "direction_block_top"]);
         this.setColour(165);
         this.setTooltip('');
         this.setHelpUrl('');
@@ -222,7 +223,7 @@ Blockly.Blocks['angle_move'] = {
 Blockly.JavaScript['angle_move'] = function(block) {
     var angle_move_angle = block.getFieldValue('move_angle');
     var number_move_angle_distance = block.getFieldValue('move_angle_distance');
-    var easing_function = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
+    var easing_function = Blockly.JavaScript.valueToCode(block, 'easing_function', Blockly.JavaScript.ORDER_NONE);
 
     distance = number_move_angle_distance * block_width_size;
 
@@ -232,20 +233,11 @@ Blockly.JavaScript['angle_move'] = function(block) {
     var distance_x = distance * Math.cos(toRadians(angle_move_angle));
     var distance_y = distance * Math.sin(toRadians(angle_move_angle));
 
-    /*if(easing_function === undefined || easing_function =='') {
-        if(direction === 'left') {
-            code = '.animate({left:"-='+distance+'", top : "}, 1000, ';
-        }else if(direction === 'right') {
-            code = '.animate({left:"+='+distance+'"}, 1000, ';
-        }
+    if(easing_function === undefined || easing_function =='') {
+        code = '.animate({left:"+='+distance_x+'", top:"-='+distance_y+'"}, 1000, ';
     }else {
-        if(direction === 'left') {
-            code = '.animate({left:"-='+distance+'"}, 1000,"'+easing_function+'", ';
-        }else if(direction === 'right') {
-            code = '.animate({left:"+='+distance+'"}, 1000,"'+easing_function+'", ';
-        }
-    }*/
+        code = '.animate({left:"+='+distance_x+'", top:"-='+distance_y+'"}, 1000, "'+easing_function+'", ';
+    }
 
-    code = '.animate({left:"+='+distance_x+'", top:"-='+distance_y+'"}, 1000, ';
     return code + callback_fun+"\n";
 };
