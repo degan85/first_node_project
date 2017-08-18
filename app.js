@@ -20,6 +20,11 @@ app.use('/user', express.static('uploads'));
 app.set('views', './views');
 app.locals.pretty = true;
 
+
+app.get('/main', function(req, res) {
+    res.render('main');
+});
+
 app.get('/originalanimate', function(req, res) {
     res.render('original_animate');
 });
