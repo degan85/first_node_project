@@ -24,8 +24,37 @@ head
     title test jquery animate</title>
     link(rel="stylesheet" type="text/css" href="css/animate.css")
 body
-    include original_html.html
+    nav.navbar.navbar-inverse
+        div.container-fluid
+            div.navbar-header
+                button(type="button", class="navbar-toggle", data-toggle="collapse", data-target="#myNavbar")
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.navbar-brand(href="#") Logo
+            div#myNavbar.collapse.navbar-collapse
+                ul.nav.navbar-nav
+                    li
+                        a(href="/mico/main") Home
+                    li
+                        a(href="/mico/about") About
+                    li
+                        a(href="/mico/project") Projects
+                    li
+                        a(href="/mico/contact") Contact
+
+                ul.nav.navbar-nav.navbar-right
+                    li
+                        a(href="#")
+                            span.glyphicon.glyphicon-log-in Login
+    //include #{id}
     //include main
+    - if (id === 'main')
+        include main
+    - else if (id === 'project')
+        include original_html.html
+
+    script(src="js/common_1.js")
     footer.container-fluid.text-center
         p COMI
 

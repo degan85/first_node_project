@@ -164,7 +164,7 @@ Blockly.Blocks['running_object'] = {
     init: function() {
         this.appendStatementInput("running_blocks")
             .setCheck(["direction_block_left", "direction_block_top"])
-            .appendField(new Blockly.FieldDropdown([[{"src":"girl.png","width":50,"height":50,"alt":"girl"},"girl"],[{"src":"cloud.png","width":50,"height":50,"alt":"cloud"},"cloud"]]), "running_object_pic");
+            .appendField(new Blockly.FieldDropdown([[{"src":"/mico/img/girl.png","width":50,"height":50,"alt":"girl"},"girl"],[{"src":"/mico/img/cloud.png","width":50,"height":50,"alt":"cloud"},"cloud"]]), "running_object_pic");
         this.setInputsInline(true);
         this.setPreviousStatement(true, null);
         /*this.setNextStatement(true, null);*/
