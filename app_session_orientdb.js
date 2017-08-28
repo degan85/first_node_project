@@ -3,7 +3,7 @@ var app = express();
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var OrientoStore = require('connect-oriento')(session);
-
+var db_config = require('config/db-config.json');
 app.listen(3003, function() {
     console.log('Connected 3003 port!!!!')
 });

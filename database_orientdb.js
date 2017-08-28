@@ -1,14 +1,29 @@
-var Oriento = require('oriento');
+// var Oriento = require('oriento');
+// var db_config = require('./config/db-config.json');
+var nopt = require('nopt');
+var express = require('express');
+var app = express();
+var session = require('express-session');
+var longOpts = {
+    "sessionSecret" : String,
+};
 
-var server = Oriento({
-    host: 'localhost',
-    HTTPport: 2480,
-    username: 'root',
-    password: 'cho8535'
-});
+var shortOpt = {
+    "s": ["--sessionSecret"],
+}
 
-var db = server.use('test');
-console.log('Using database: ' + db.name);
+// var parsed = nopt(longOpts, shortOpt, process.argv, 2);
+// console.log("session secret is : ",parsed.sessionSecret.a);
+console.log(app.use(session({secret: process.env.SESSION_SECRET})));
+// var server = Oriento({
+//     host: 'localhost',
+//     HTTPport: 2480,
+//     username: 'root',
+//     password: 'cho8535'
+// });
+
+// var db = server.use('test');
+// console.log('Using database: ' + db.name);
 
 // db.record.get('#22:0').then(function (record) {
 //     console.log('Loaded record:', record);
@@ -53,11 +68,11 @@ console.log('Using database: ' + db.name);
 //     console.log(result);
 // });
 
-var sql = "DELETE FROM topic WHERE @rid=:rid";
-db.query(sql, {params:{rid : '#23:0'}}).then(function (result) {
-    console.log(result);
-});
+// var sql = "DELETE FROM topic WHERE @rid=:rid";
+// db.query(sql, {params:{rid : '#23:0'}}).then(function (result) {
+//     console.log(result);
+// });
 
 
 
-db.close();
+// db.close();

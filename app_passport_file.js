@@ -12,13 +12,9 @@ var assert = require("assert");
 var opts = {
     password: "helloorld"
 };
-app.listen(3003, function() {
-    console.log('Connected 3003 port!!!!')
-});
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
-app.use(bodyParser.urlencoded({ extended : false}));
-
-// app.set('trust proxy', 1); // trust first proxy
 app.use(session({
     secret: 'aeoifja12312!@#%@#adfeas',
     resave: false,
@@ -27,10 +23,14 @@ app.use(session({
     // cookie: { secure: true }
 }));
 
-// app.use(session({
-//     store: new FileStore(options),
-//     secret: 'keyboard cat'
-// }));
+app.listen(3003, function() {
+    console.log('Connected 3003 port!!!!')
+});
+
+app.use(bodyParser.urlencoded({ extended : false}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/count',function (req, res) {
 
@@ -111,28 +111,57 @@ app.get('/auth/login', function (req, res) {
     res.send(output);
 });
 
-app.post('/auth/login', function (req, res) {
-    var uname = req.body.username;
-    var pwd = req.body.password;
-    for(var i=0; i<users.length; i++) {
-        var user = users[i];
-        if(uname === user.username) {
-            return hasher({password : pwd, salt : user.salt}, function(err, pass, salt, hash){
-                if(hash === user.password) {
-                    req.session.displayName = user.displayName;
-                    req.session.save(function () {
-                        res.redirect('/welcome');
-                    })
-                }else {
-                    res.send('Who are you? <a href="/auth/login">login</a>');
-                }
-            });
+passport.use(new LocalStrategy(
+    function (username, password, done) {
+        var uname = req.body.username;
+        var pwd = req.body.password;
+        for (var i = 0; i < users.length; i++) {
+            var user = users[i];
+            if (uname === user.username) {
+                return hasher({password: pwd, salt: user.salt}, function (err, pass, salt, hash) {
+                    if (hash === user.password) {
+                        done(null, user);
+                    } else {
+                        done(null, false);
+                    }
+                });
+            }
         }
+        done(null, false);
     }
+));
+app.post(
+    '/auth/login', 
+    passport.authenticate(
+        'local', 
+        { 
+            successRedirect: '/welcome',
+            failureRedirect: '/auth/login',
+            failureFlash: false 
+        }
+    )
+);
 
 
-
-});
+// app.post('/auth/login', function (req, res) {
+//     var uname = req.body.username;
+//     var pwd = req.body.password;
+//     for(var i=0; i<users.length; i++) {
+//         var user = users[i];
+//         if(uname === user.username) {
+//             return hasher({password : pwd, salt : user.salt}, function(err, pass, salt, hash){
+//                 if(hash === user.password) {
+//                     req.session.displayName = user.displayName;
+//                     req.session.save(function () {
+//                         res.redirect('/welcome');
+//                     })
+//                 }else {
+//                     res.send('Who are you? <a href="/auth/login">login</a>');
+//                 }
+//             });
+//         }
+//     }
+// });
 
 app.get('/welcome', function (req, res) {
     if(req.session.displayName) {
