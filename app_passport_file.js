@@ -6,14 +6,15 @@ var bodyParser = require('body-parser');
 var OrientoStore = require('connect-oriento')(session);
 var db_config = require('./config/db-config.json');
 
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+
 var bkfd2Password = require("pbkdf2-password");
 var hasher = bkfd2Password();
 var assert = require("assert");
 var opts = {
     password: "helloorld"
 };
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 
 app.use(session({
     secret: 'aeoifja12312!@#%@#adfeas',
@@ -86,6 +87,8 @@ app.post('/auth/register', function (req, res) {
         };
         users.push(user);
 
+        req.login()
+
         req.session.displayName = req.body.displayName;
         req.session.save(function () {
             res.redirect('/welcome');
@@ -111,15 +114,33 @@ app.get('/auth/login', function (req, res) {
     res.send(output);
 });
 
+//done(null, user)가 실행될때 콜백 함수
+passport.serializeUser(function(user, done) {
+    console.log("serializeUser", user);
+    done(null, user.username);
+});
+
+//session에 저장되서 한번 로그인 후에는 이 함수를 호출
+passport.deserializeUser(function(id, done) {
+    console.log("deserializeUser", id);
+    for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+        if(user.username === id) {
+            return done(null, user);
+        }
+    }
+});
+
 passport.use(new LocalStrategy(
     function (username, password, done) {
-        var uname = req.body.username;
-        var pwd = req.body.password;
+        var uname = username;
+        var pwd = password;
         for (var i = 0; i < users.length; i++) {
             var user = users[i];
             if (uname === user.username) {
                 return hasher({password: pwd, salt: user.salt}, function (err, pass, salt, hash) {
                     if (hash === user.password) {
+                        console.log("LocalStrategy", user);
                         done(null, user);
                     } else {
                         done(null, false);
@@ -163,9 +184,10 @@ app.post(
 //     }
 // });
 
+//req객체에 user로 만들어줌
 app.get('/welcome', function (req, res) {
-    if(req.session.displayName) {
-        res.send(`<h1>Hello, ${req.session.displayName}</h1><a href="/auth/logout">logout</a>`)
+    if(req.user && req.user.displayName) {
+        res.send(`<h1>Hello, ${req.user.displayName}</h1><a href="/auth/logout">logout</a>`)
     }else {
         res.send(`
             <h1>Welcome</h1>
@@ -178,6 +200,7 @@ app.get('/welcome', function (req, res) {
 });
 
 app.get('/auth/logout', function (req, res) {
-    delete req.session.displayName;
+    req.logout();
+    // delete req.session.displayName;
     res.redirect('/welcome');
 });
